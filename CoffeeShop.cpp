@@ -1,5 +1,7 @@
 #include "CoffeeShop.hpp"
 
+
+//CoffeShop
 void CoffeeShop::removeDrink(const std::string& drinkName)
 {
     if (!menu.size()) return;
@@ -31,7 +33,6 @@ void CoffeeShop::showMenu() const
 }
 
 
-
 void CoffeeShop::fireBarista(Barista* barista)
 {
     for (auto elem:baristas)
@@ -42,8 +43,6 @@ void CoffeeShop::fireBarista(Barista* barista)
         }
     }
 }
-
-
 
 void CoffeeShop::showBaristas() const
 {
@@ -57,4 +56,35 @@ void CoffeeShop::showBaristas() const
     {
         std::cout << elem->getName() << std::endl;
     }
+}
+
+
+void CoffeeShop::showQueue() const
+{
+    for (const auto& elem : queue)
+    {
+        std::cout << elem->getName() << ' ';
+    }
+    std::cout << std::endl;
+}
+
+
+void CoffeeShop::displayShopInfo() const
+{
+    std::cout << "ShopName: " << shopName << std::endl;
+    std::cout << "Menu" << std::endl; showMenu();
+    std::cout << "Baristas" << std::endl; showBaristas();
+    std::cout << "Queue" << std::endl; showQueue();
+
+}
+
+
+
+//Customer
+void Customer::display() const
+{
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Balance: " << balance << std::endl;
+    currentOrder->displayOrder();
+
 }

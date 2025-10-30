@@ -32,10 +32,10 @@ public:
     void fireBarista(Barista* barista);
     void showBaristas() const;
 
-    void addCustomerToQueue(Customer* customer);
-    void serveNextCustomer();
+    void addCustomerToQueue(Customer* customer) { queue.push_back(customer); };
+    void serveNextCustomer() { queue.erase(queue.begin()); };
     void showQueue() const;
-    void constructMenu();
+    void constructMenu(); // es inch piti ani?
 
     void displayShopInfo() const;
 };
@@ -48,16 +48,16 @@ private:
 
 public:
     Customer() = default;
-    Customer(const std::string& name, double balance);
+    Customer(const std::string& newName, double newBalance) : name{newName}, balance{newBalance} {}
 
 
-    std::string getName() const;
-    double getBalance() const;
-    void setBalance(double newBalance);
+    std::string getName() const { return name; };
+    double getBalance() const { return balance; };
+    void setBalance(double newBalance) { balance = newBalance; };
 
-    void placeOrder(Order* order);
-    void payOrder();
-    void viewOrder() const;
+    void placeOrder(Order* order) { delete currentOrder; currentOrder = order; };
+    void payOrder() { balance -= currentOrder->getTotalPrice(); }
+    void viewOrder() const { currentOrder->displayOrder(); };
 
     void display() const;
 };
