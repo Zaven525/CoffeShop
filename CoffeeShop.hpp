@@ -33,7 +33,7 @@ public:
     void showBaristas() const;
 
     void addCustomerToQueue(Customer* customer) { queue.push_back(customer); };
-    void serveNextCustomer() { queue.erase(queue.begin()); };
+    void serveNextCustomer() { if(!queue.empty()) queue.erase(queue.begin()); };
     void showQueue() const;
     void constructMenu(); // es inch piti ani?
 
@@ -48,7 +48,7 @@ private:
 
 public:
     Customer() = default;
-    Customer(const std::string& newName, double newBalance) : name{newName}, balance{newBalance} {}
+    Customer(const std::string& newName, double newBalance) : name{newName}, balance{newBalance}, currentOrder{nullptr} {}
 
 
     std::string getName() const { return name; };
@@ -56,7 +56,7 @@ public:
     void setBalance(double newBalance) { balance = newBalance; };
 
     void placeOrder(Order* order) { delete currentOrder; currentOrder = order; };
-    void payOrder() { balance -= currentOrder->getTotalPrice(); }
+    void payOrder();
     void viewOrder() const { currentOrder->displayOrder(); };
 
     void display() const;
@@ -73,22 +73,22 @@ private:
 
 public:
 
-    Order();
-    Order(int id);
+    Order() : orderId{0}, totalPrice(0), isPrepared{false}, isPaid{false} {}
+    Order(int id) : orderId{id}, totalPrice(0), isPrepared{false}, isPaid{false} {}
 
-    int getOrderId() const;
-    double getTotalPrice() const;
-    bool getIsPrepared() const;
-    bool getIsPaid() const;
+    int getOrderId() const { return orderId; }
+    double getTotalPrice() const { return totalPrice; }
+    bool getIsPrepared() const { return isPrepared; }
+    bool getIsPaid() const { return isPaid; }
 
 
-    void addDrink(const Drink& drink);
-    void removeDrink(int index);
+    void addDrink(const Drink& drink) { drinks.push_back(drink); }
+    void removeDrink(int index) { if (index >= 0 && index < drinks.size()) drinks.erase(drinks.begin() + index); }
     void calculateTotalPrice();
 
 
-    void markPrepared();
-    void markPaid();
+    void markPrepared() { isPrepared = true; }
+    void markPaid() { isPaid = true; }
 
     void displayOrder() const;
 };
@@ -97,7 +97,7 @@ public:
 class Drink {
 public:
     enum class Size { Small, Medium, Big };
-
+    friend std::ostream& operator<<(std::ostream& os, const Size& volume);
 private:
     std::string name;
     Size volume;
@@ -106,17 +106,17 @@ private:
 public:
     // Constructors
     Drink() = default;
-    Drink(const std::string& newName, Size newVolume, double newPrice) : name{newName}, volume{newVolume}, price{newPrice} {};
+    Drink(const std::string& newName, Size newVolume, double newPrice) : name{newName}, volume{newVolume}, price{newPrice} {}
 
     // Getters
-    std::string getName() const { return name; };
-    Size getVolume() const { return volume; };
-    double getPrice() const { return price; };
+    std::string getName() const { return name; }
+    Size getVolume() const { return volume; }
+    double getPrice() const { return price; }
 
     // Setters
-    void setName(const std::string& newName);
-    void setVolume(Size newVolume);
-    void setPrice(double newPrice);
+    void setName(const std::string& newName) { name = newName; }
+    void setVolume(Size newVolume) { volume = newVolume; }
+    void setPrice(double newPrice) { price = newPrice; }
 
     // Display
     void display() const;
@@ -130,13 +130,13 @@ private:
 public:
     // Constructors
     Barista() = default;
-    Barista(const std::string& newName) : name{newName} {};
+    Barista(const std::string& newName) : name{newName} {}
 
     // Getters/Setters
-    std::string getName() const { return name; };
-    void setName(const std::string& newName);
+    std::string getName() const { return name; }
+    void setName(const std::string& newName) { name = newName; }
 
     // Behavior
-    void prepareOrder(Order* order); // dependency
+    void prepareOrder(Order* order) { order->markPrepared(); } // dependency
     void greetCustomer() const;
 };

@@ -88,3 +88,57 @@ void Customer::display() const
     currentOrder->displayOrder();
 
 }
+
+void Customer::payOrder(){ 
+    if (currentOrder) 
+    {
+        balance -= currentOrder->getTotalPrice();
+        currentOrder->markPaid();
+    }
+}
+
+//Order
+void Order::calculateTotalPrice()
+{
+    totalPrice = 0;
+    for (const auto& elem : drinks)
+    {
+        totalPrice += elem.getPrice();
+    }
+}
+
+void Order::displayOrder() const
+{
+    std::cout << "ID: " << orderId << std::endl;
+    std::cout << "Drinks" << std::endl;
+    for (const auto& elem : drinks)
+    {
+        elem.display();
+    }
+    std::cout << "TotalPrice: " << totalPrice << std::endl;
+    std::cout << "IsPrepared: " << isPrepared << std::endl;
+    std::cout << "IsPaid: " << isPaid << std::endl;
+}
+
+
+//Size
+std::ostream& operator<<(std::ostream& os, const Drink::Size& volume)
+{
+    switch(volume) 
+    {
+        case Drink::Size::Small: os << "Small";  break;
+        case Drink::Size::Medium: os << "Medium";  break;
+        case Drink::Size::Big: os << "Big";  break;
+    }
+    return os;
+}
+//Drink
+
+void Drink::display() const
+{
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Volume: " <<  volume << std::endl;
+    std::cout << "Price: " << price << std::endl;
+} 
+
+
